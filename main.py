@@ -2,7 +2,7 @@ import flet as ft
 
 TITLE: str = 'Greeings App'
 WIDTH: int = 625
-HEIGHT: int = 400
+HEIGHT: int = 325
 
 
 def main(page: ft.Page):
@@ -29,27 +29,29 @@ def main(page: ft.Page):
         page.update()
 
     def say_hello(e):
-        first_name: str = first_name_field.value
-        last_name: str = last_name_field.value
+        first_name_field.current.focus()
 
-        first_name = first_name.strip(' ').title()
-        last_name = last_name.strip(' ').title()
+        first_name: str = first_name_field.current.value.strip(' ').title()
 
-        if first_name == '' or last_name == '':
+        if first_name == '':
             return
 
-        first_name_field.value = ''
-        last_name_field.value = ''
+        first_name_field.current.value = ''
 
-        greeting.value = f"Hello, {first_name} {last_name}!"
+        greeting.value = f"Hello, {first_name}!"
         greeting.update()
 
-        last_name_field.update()
+        first_name_field.current.update()
 
-        first_name_field.update()
-        first_name_field.focus()
+    def clear_greeting(e):
+        first_name_field.current.focus()
 
-    # TITLE
+        if greeting.value == '':
+            return
+
+        greeting.value = ''
+        greeting.update()
+
     page_title_text: ft.Text = ft.Text(
         value=TITLE, size=36, font_family='arial', weight=600
     )
@@ -59,23 +61,16 @@ def main(page: ft.Page):
         on_click=toggle_mode
     )
 
-    # NAME
-    first_name_field: ft.TextField = ft.TextField(
-        hint_text='First name',
-        width=600,
-        autofocus=True
-    )
-    last_name_field: ft.TextField = ft.TextField(
-        hint_text='Last name',
-        width=600
-    )
+    first_name_field = ft.Ref[ft.TextField(value='')]()
 
-    # SEND
     send_button: ft.ElevatedButton = ft.ElevatedButton(
         text="SEND", width=200, height=60, on_click=say_hello
     )
 
-    # ON SEND REVEAL
+    clear_button: ft.ElevatedButton = ft.ElevatedButton(
+        text='CLEAR', width=200, height=60, on_click=clear_greeting
+    )
+
     greeting: ft.Text = ft.Text(
         font_family='arial',
         size=36,
@@ -85,9 +80,8 @@ def main(page: ft.Page):
     page.add(
         ft.Column([
             ft.Row([page_title_text, theme_button]),
-            first_name_field,
-            last_name_field,
-            send_button,
+            ft.TextField(ref=first_name_field, label='first name'),
+            ft.Row([send_button, clear_button]),
             greeting
         ])
     )
