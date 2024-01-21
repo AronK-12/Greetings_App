@@ -21,11 +21,10 @@ def main(page: ft.Page):
         if page.theme_mode == ft.ThemeMode.DARK:
             page.theme_mode = ft.ThemeMode.LIGHT
             theme_button.icon = ft.icons.LIGHT_MODE
-            print("Light mode")
+
         elif page.theme_mode == ft.ThemeMode.LIGHT:
             page.theme_mode = ft.ThemeMode.DARK
             theme_button.icon = ft.icons.DARK_MODE
-            print("Dark mode")
 
         page.update()
 
@@ -39,8 +38,16 @@ def main(page: ft.Page):
         if first_name == '' or last_name == '':
             return
 
+        first_name_field.value = ''
+        last_name_field.value = ''
+
         greeting.value = f"Hello, {first_name} {last_name}!"
         greeting.update()
+
+        last_name_field.update()
+
+        first_name_field.update()
+        first_name_field.focus()
 
     # TITLE
     page_title_text: ft.Text = ft.Text(
@@ -55,7 +62,8 @@ def main(page: ft.Page):
     # NAME
     first_name_field: ft.TextField = ft.TextField(
         hint_text='First name',
-        width=600
+        width=600,
+        autofocus=True
     )
     last_name_field: ft.TextField = ft.TextField(
         hint_text='Last name',
